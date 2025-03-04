@@ -1,9 +1,9 @@
-import { Configuration, OpenAIApi } from "openai-edge";
-import { StreamingTextResponse } from "ai";
-import { MendableStream } from "@/lib/mendable_stream";
-import { welcomeMessage } from "@/lib/strings";
+import { Configuration, OpenAIApi } from 'openai-edge';
+import { StreamingTextResponse } from 'ai';
+import { MendableStream } from '@/lib/mendable_stream';
+import { welcomeMessage } from '@/lib/strings';
 
-export const runtime = "edge";
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
@@ -13,22 +13,21 @@ export async function POST(req: Request) {
   const question = messages[messages.length - 1].content;
   messages.pop();
 
-  const url = "https://api.mendable.ai/v0/newConversation";
+  const url = 'https://api.mendable.ai/v0/newConversation';
 
   const data = {
     api_key: process.env.MENDABLE_API_KEY,
   };
 
   const r = await fetch(url, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
   });
 
   const conversation_id = await r.json();
-
 
   const history = [];
   for (let i = 0; i < messages.length; i += 2) {
@@ -39,7 +38,7 @@ export async function POST(req: Request) {
   }
 
   history.unshift({
-    prompt: "",
+    prompt: '',
     response: welcomeMessage,
   });
 

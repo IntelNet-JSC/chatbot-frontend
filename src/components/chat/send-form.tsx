@@ -1,60 +1,52 @@
-import { useEnsureRegeneratorRuntime } from "@/app/hooks/useEnsureRegeneratorRuntime";
-import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useRef, useState } from "react";
-import { Grid } from "react-loader-spinner";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
-import { MicIcon } from "../icons/mic-icon";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
+import { useEnsureRegeneratorRuntime } from '@/app/hooks/useEnsureRegeneratorRuntime';
+import { Textarea } from '@/components/ui/textarea';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Grid } from 'react-loader-spinner';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { MicIcon } from '../icons/mic-icon';
+import { Button } from '../ui/button';
+import { toast } from '../ui/use-toast';
+import { useCreateChatMutation } from '../../../redux/services/chat';
+import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+import { setChat } from '../../../redux/features/chat';
 
 interface SendForm {
   input: string;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  isLoading: boolean;
   handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  setChatInput?: Dispatch<SetStateAction<string>>;
 }
 
-export default function SendForm({
-  input,
-  handleSubmit,
-  isLoading,
-  handleInputChange,
-}: SendForm) {
+export default function SendForm({ input, handleSubmit, handleInputChange, setChatInput }: SendForm) {
   useEnsureRegeneratorRuntime();
 
-  const [textareaHeight, setTextareaHeight] = useState("h-10");
+  const dispatch = useAppDispatch();
+  const chat = useAppSelector((state) => state.chat);
+
+  const [textareaHeight, setTextareaHeight] = useState('h-10');
 
   const textareaRef = useRef(null);
 
-  const {
-    listening,
-    browserSupportsSpeechRecognition,
-    resetTranscript,
-    transcript,
-  } = useSpeechRecognition();
+  const { listening, browserSupportsSpeechRecognition, resetTranscript, transcript } = useSpeechRecognition();
 
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) {
       toast({
-        description: "Your browser does not support speech recognition",
+        description: 'Your browser does not support speech recognition',
       });
     }
   }, [browserSupportsSpeechRecognition]);
 
   useEffect(() => {
-    const textarea = document.querySelector(".mendable-textarea");
+    const textarea = document.querySelector('.mendable-textarea');
     if (textarea) {
-      if (input === "") {
+      if (input === '') {
         resetTranscript();
-        setTextareaHeight("h-10");
+        setTextareaHeight('h-10');
       } else {
-        const shouldExpand =
-          textarea.scrollHeight > textarea.clientHeight &&
-          textareaHeight !== "h-20";
+        const shouldExpand = textarea.scrollHeight > textarea.clientHeight && textareaHeight !== 'h-20';
         if (shouldExpand) {
-          setTextareaHeight("h-20");
+          setTextareaHeight('h-20');
         }
       }
 
@@ -66,15 +58,15 @@ export default function SendForm({
 
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden" && listening) {
+      if (document.visibilityState === 'hidden' && listening) {
         SpeechRecognition.stopListening();
       }
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [listening]);
 
@@ -102,10 +94,20 @@ export default function SendForm({
     }
   }
 
+  const [createChat, { isLoading: isLoadingCreateChat }] = useCreateChatMutation();
+
   return (
     <form
-      onSubmit={(event) => {
+      onSubmit={async (event) => {
         handleSubmit(event);
+
+        await dispatch(setChat([...chat, { content: input, role: 'user' }]));
+
+        createChat({
+          chatInput: input,
+        });
+
+        setChatInput && setChatInput('');
       }}
       className="flex items-center justify-center w-full space-x-2"
     >
@@ -113,7 +115,7 @@ export default function SendForm({
         <MicIcon
           onClick={toggleSpeech}
           className={`absolute right-2 h-4 w-4 top-1/2 transition-all transform -translate-y-2 ${
-            listening ? "text-red-500 scale-125 animate-pulse" : "text-gray-500"
+            listening ? 'text-red-500 scale-125 animate-pulse' : 'text-gray-500'
           } dark:text-gray-400 hover:scale-125 cursor-pointer`}
         />
 
@@ -127,17 +129,10 @@ export default function SendForm({
       </div>
 
       <Button className="h-10">
-        {isLoading ? (
+        {isLoadingCreateChat ? (
           <div className="flex gap-2 items-center">
-            <Grid
-              height={12}
-              width={12}
-              radius={5}
-              ariaLabel="grid-loading"
-              color="#fff"
-              visible={true}
-            />
-            {"Loading..."}
+            <Grid height={12} width={12} radius={5} ariaLabel="grid-loading" color="#fff" visible={true} />
+            {'Loading...'}
           </div>
         ) : (
           <div className="flex flex-col w-16">Send</div>
