@@ -28,7 +28,7 @@ function isHydrateAction(action: Action): action is PayloadAction<RootState> {
 // --------------------------------
 
 const customMainBaseQuery = fetchBaseQuery({
-  baseUrl: CEnv.URL_API_MAIN_SIDE,
+  baseUrl: CEnv.URL_API_MAIN_SIDE || '',
   //   validateStatus: (response, result) => {
   //     return !((result?.ErrorCode && result?.ErrorCode !== EErrCode.SUCCESS) || result?.MessageCode);
   //   },

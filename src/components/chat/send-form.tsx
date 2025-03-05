@@ -9,6 +9,7 @@ import { toast } from '../ui/use-toast';
 import { useCreateChatMutation } from '../../../redux/services/chat';
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
 import { setChat } from '../../../redux/features/chat';
+import { useSearchParams } from 'next/navigation';
 
 interface SendForm {
   input: string;
@@ -18,6 +19,9 @@ interface SendForm {
 }
 
 export default function SendForm({ input, handleSubmit, handleInputChange, setChatInput }: SendForm) {
+  const searchParams = useSearchParams();
+  const paramsQuery = Object.fromEntries(Array.from(searchParams.entries()));
+
   useEnsureRegeneratorRuntime();
 
   const dispatch = useAppDispatch();
@@ -104,7 +108,9 @@ export default function SendForm({ input, handleSubmit, handleInputChange, setCh
         await dispatch(setChat([...chat, { content: input, role: 'user' }]));
 
         createChat({
+          link: paramsQuery?.link,
           chatInput: input,
+          metadata: Object.fromEntries(Object.entries(paramsQuery).filter(([key]) => key !== 'link')),
         });
 
         setChatInput && setChatInput('');

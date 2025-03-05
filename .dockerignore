@@ -1,0 +1,13 @@
+.git
+.github
+*Dockerfile*
+*docker-compose*
+.dockerignore
+node_modules
+dist
+.env*.local
+example.env
+.next
+/.next/
+/out/
+docker

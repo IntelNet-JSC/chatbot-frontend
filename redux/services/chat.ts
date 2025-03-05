@@ -1,17 +1,21 @@
 import { setChat } from '../features/chat';
 import { RootState } from '../store';
 import { customMainAPI } from './customAPI';
+import { v4 as uuidv4 } from 'uuid';
+
+const uuid = uuidv4();
 
 export const chatAPI = customMainAPI.injectEndpoints({
   endpoints: (builder) => ({
-    createChat: builder.mutation<any, { chatInput: string; sessionId?: string; action?: string }>({
-      query: ({ chatInput, sessionId = '3569d871-ed50-4a3e-88cb-588a9563daa7', action = 'sendMessage' }) => ({
-        url: `/webhook/a721bef1-cb87-45a3-84b6-989c1b04ca91/chat`,
+    createChat: builder.mutation<any, { link: string; chatInput: string; sessionId?: string; action?: string; metadata?: any }>({
+      query: ({ link, chatInput, sessionId = uuid, action = 'sendMessage', metadata }) => ({
+        url: link,
         method: 'POST',
         body: {
           chatInput,
           sessionId,
           action,
+          metadata,
         },
       }),
       //   transformResponse: ({ Data }: IResponseAPI<TPollQuestion>): TPollQuestion => Data,
