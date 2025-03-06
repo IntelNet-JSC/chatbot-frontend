@@ -9,6 +9,7 @@ import { Message } from 'ai';
 import { Grid } from 'react-loader-spinner';
 import { cn } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
+import MarkdownRenderer from './markdown';
 
 export default function Bubble({
   key,
@@ -24,6 +25,11 @@ export default function Bubble({
 }) {
   const searchParams = useSearchParams();
   const paramsQuery = Object.fromEntries(Array.from(searchParams.entries()));
+
+  const isMarkdown = (text: string): boolean => {
+    if (typeof text !== 'string') return false;
+    return /[#\-\*\[\]\(\)`>!]/.test(text); // Basic Markdown detection
+  };
 
   return (
     <div key={key} className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
@@ -61,42 +67,46 @@ export default function Bubble({
       )}
       <p className="leading-relaxed">
         <span className="block font-bold text-gray-700">{message.role === 'user' ? 'Bạn' : paramsQuery?.title} </span>
-        {!loading && (
-          <span
-            dangerouslySetInnerHTML={{
-              __html: message.content.endsWith('|>')
-                ? message.content
-                    .replaceAll(
-                      `<|loading_tools|>`,
-                      renderToString(
-                        <div className="my-2 flex items-center gap-1">
-                          <CgSpinner className="animate-spin" size={20} />
-                          <span className="">Loading tools...</span>
-                        </div>
-                      )
+        {!loading &&
+          (message.content.endsWith('|>') ? (
+            <span
+              dangerouslySetInnerHTML={{
+                __html: message.content
+                  .replaceAll(
+                    `<|loading_tools|>`,
+                    renderToString(
+                      <div className="my-2 flex items-center gap-1">
+                        <CgSpinner className="animate-spin" size={20} />
+                        <span className="">Loading tools...</span>
+                      </div>
                     )
-                    .replaceAll(`<|tool_error|>`, renderToString(<AiOutlineWarning size={20} />))
-                : message.content
-                    .replaceAll(`<|tool_error|>`, '')
-                    .replaceAll(
-                      /\<\|tool_called[\s\S]*\$\$/g,
-                      renderToString(
-                        <>
-                          <div className="my-2 flex flex-row items-center">
-                            {message.content.split('$$')[2] === 'false' ? (
-                              <AiOutlineTool size={20} />
-                            ) : (
-                              <BsLightningCharge className="ms-mr-1 ms-fill-yellow-400" size={18} />
-                            )}
-                            <span className="ml-1">{message.content.split('$$')[1]}</span>
-                          </div>
-                        </>
-                      )
-                    )
-                    .replaceAll(`<|loading_tools|>`, ''),
-            }}
-          />
-        )}
+                  )
+                  .replaceAll(`<|tool_error|>`, renderToString(<AiOutlineWarning size={20} />)),
+              }}
+            />
+          ) : (
+            <MarkdownRenderer
+              content={message.content
+                .replaceAll(`<|tool_error|>`, '')
+                .replaceAll(
+                  /\<\|tool_called[\s\S]*\$\$/g,
+                  renderToString(
+                    <>
+                      <div className="my-2 flex flex-row items-center">
+                        {message.content.split('$$')[2] === 'false' ? (
+                          <AiOutlineTool size={20} />
+                        ) : (
+                          <BsLightningCharge className="ms-mr-1 ms-fill-yellow-400" size={18} />
+                        )}
+                        <span className="ml-1">{message.content.split('$$')[1]}</span>
+                      </div>
+                    </>
+                  )
+                )
+                .replaceAll(`<|loading_tools|>`, '')}
+            />
+          ))}
+
         {loading && <Grid height={12} width={12} radius={5} ariaLabel="grid-loading" color="#1a1a1a" ms-visible={true} />}
       </p>
     </div>
