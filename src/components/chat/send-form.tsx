@@ -129,7 +129,7 @@ export default function SendForm({ input, handleSubmit, handleInputChange, setCh
           value={input}
           onChange={handleInputChange}
           className={`pr-8 resize-none mendable-textarea min-h-[20px] ${textareaHeight}`}
-          placeholder="Type a message..."
+          placeholder="Nhập tin nhắn..."
           ref={textareaRef}
         />
       </div>
@@ -138,10 +138,10 @@ export default function SendForm({ input, handleSubmit, handleInputChange, setCh
         {isLoadingCreateChat ? (
           <div className="flex gap-2 items-center">
             <Grid height={12} width={12} radius={5} ariaLabel="grid-loading" color="#fff" visible={true} />
-            {'Loading...'}
+            {'Đang tải...'}
           </div>
         ) : (
-          <div className="flex flex-col w-16">Send</div>
+          <div className="flex flex-col w-16">Gửi</div>
         )}
       </Button>
     </form>

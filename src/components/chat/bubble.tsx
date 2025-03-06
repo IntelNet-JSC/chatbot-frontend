@@ -8,6 +8,7 @@ import { BsLightningCharge } from 'react-icons/bs';
 import { Message } from 'ai';
 import { Grid } from 'react-loader-spinner';
 import { cn } from '@/lib/utils';
+import { useSearchParams } from 'next/navigation';
 
 export default function Bubble({
   key,
@@ -21,6 +22,9 @@ export default function Bubble({
   };
   loading?: boolean;
 }) {
+  const searchParams = useSearchParams();
+  const paramsQuery = Object.fromEntries(Array.from(searchParams.entries()));
+
   return (
     <div key={key} className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
       {message.role === 'user' && (
@@ -56,7 +60,7 @@ export default function Bubble({
         </Avatar>
       )}
       <p className="leading-relaxed">
-        <span className="block font-bold text-gray-700">{message.role === 'user' ? 'You' : 'AI'} </span>
+        <span className="block font-bold text-gray-700">{message.role === 'user' ? 'Bạn' : paramsQuery?.title} </span>
         {!loading && (
           <span
             dangerouslySetInnerHTML={{
