@@ -134,7 +134,7 @@ export default function SendForm({ input, handleSubmit, handleInputChange, setCh
         />
       </div>
 
-      <Button className="h-10">
+      <Button disabled={input === '' || isLoadingCreateChat} className="h-10">
         {isLoadingCreateChat ? (
           <div className="flex gap-2 items-center">
             <Grid height={12} width={12} radius={5} ariaLabel="grid-loading" color="#fff" visible={true} />
