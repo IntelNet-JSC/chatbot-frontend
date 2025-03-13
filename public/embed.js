@@ -36,6 +36,28 @@
         function EmbedComponent() {
           const [iframeVisible, setIframeVisible] = useState(false);
 
+          // Find the script tag by its src attribute
+          const scripts = document.getElementsByTagName('script');
+          let scriptTag;
+          for (let script of scripts) {
+            if (script.src.includes('embed.js')) {
+              scriptTag = script;
+              break;
+            }
+          }
+
+          if (!scriptTag) {
+            console.error('Script tag not found');
+            return null;
+          }
+
+          // Get query parameters from the URL
+          const scriptSrc = scriptTag.src;
+          const urlParams = new URLSearchParams(scriptSrc.split('?')[1]);
+
+          const link = urlParams.get('link') || 'https://aidemo.membee.app/webhook/c8018a60-91d4-4664-9a07-411f396501f1/chat';
+          const title = urlParams.get('title') || 'Membee';
+
           const svgChatIcon = createElement(
             'svg',
             { xmlns: 'http://www.w3.org/2000/svg', x: '0px', y: '0px', width: '30', height: '30', viewBox: '0 0 50 50' },
@@ -85,7 +107,7 @@
 
             iframeVisible &&
               createElement('iframe', {
-                src: 'https://chatbotui.membee.app//?link=https://aidemo.membee.app/webhook/c8018a60-91d4-4664-9a07-411f396501f1/chat&title=Membee',
+                src: `https://chatbotui.membee.app/embed.js/?link=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`,
                 style: { height: '100vh', width: '100vw', maxHeight: '63vh', maxWidth: '37vw', borderRadius: '10px', position: 'relative' },
               })
           );
