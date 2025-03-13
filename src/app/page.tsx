@@ -4,19 +4,26 @@ import Chat from '@/components/chat';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { MessageCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIsMobile } from './hooks/useIsMobile';
 
 export default function Home() {
   const [open, setOpen] = useState<boolean>(false);
   const isMobile = useIsMobile();
+  const [mounted, setMounted] = useState(false); // Prevents hydration issues
+
+  useEffect(() => {
+    setMounted(true); // Ensures we only run client-side
+  }, []);
+
+  if (!mounted) return null; // Prevents mismatches during hydration
 
   return (
-    <div className="flex bg-gray-50 min-h-screen items-center justify-center">
-      {isMobile ? (
+    <div className="bg-white min-h-screen">
+      {/* {isMobile ? (
         <Chat setOpen={setOpen} />
       ) : (
-        <Popover open={open} onOpenChange={() => setOpen(true)}>
+        <Popover open={true} onOpenChange={() => setOpen(true)}>
           <PopoverContent align="start" className="w-[440px] mr-4">
             <Chat setOpen={setOpen} />
           </PopoverContent>
@@ -26,7 +33,9 @@ export default function Home() {
             </Button>
           </PopoverTrigger>
         </Popover>
-      )}
+      )} */}
+
+      <Chat setOpen={setOpen} />
     </div>
   );
 }

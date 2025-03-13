@@ -102,3 +102,8 @@ ul li::marker {
 ol li::marker {
   color: black !important; /* Changes the bullet points to black */
 }
+
+html,
+body {
+  height: auto;
+}

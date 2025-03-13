@@ -25,9 +25,9 @@ export default function Chat({ setOpen }: Chat) {
   const paramsQuery = Object.fromEntries(Array.from(searchParams.entries()));
   const share = searchParams.get('share');
   //@ts-ignore
-  const lzstring = LZString;
+  // const lzstring = LZString;
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    initialMessages: share && lzstring ? JSON.parse(lzstring.decompressFromEncodedURIComponent(share)) : [],
+    // initialMessages: share && lzstring ? JSON.parse(lzstring.decompressFromEncodedURIComponent(share)) : [],
   });
 
   const [chatInput, setChatInput] = useState<string>('');
@@ -56,14 +56,14 @@ export default function Chat({ setOpen }: Chat) {
         <CardHeader>
           <div className="flex flex-row items-start justify-between max-w-[100%]">
             <CardTitle className="text-lg">{paramsQuery?.title}</CardTitle>
-            {!isMobile && (
+            {/* {!isMobile && (
               <CloseIcon
                 className="cursor-pointer"
                 onClick={() => {
                   setOpen && setOpen(false);
                 }}
               />
-            )}
+            )} */}
             {/* <Share
             onClick={() => {
               if (typeof window !== 'undefined') {
