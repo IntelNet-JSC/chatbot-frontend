@@ -107,7 +107,7 @@
 
             iframeVisible &&
               createElement('iframe', {
-                src: `https://chatbotui.membee.app/embed.js/?link=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`,
+                src: `https://chatbotui.membee.app/?link=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`,
                 style: { height: '100vh', width: '100vw', maxHeight: '63vh', maxWidth: '37vw', borderRadius: '10px', position: 'relative' },
               })
           );
