@@ -1,4 +1,10 @@
 (function () {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = '/public/chatbot.css'; // Adjust the path based on your setup
+  document.head.appendChild(link);
+
   function loadScript(url, callback) {
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -58,6 +64,9 @@
           const link = urlParams.get('link') || 'https://aidemo.membee.app/webhook/c8018a60-91d4-4664-9a07-411f396501f1/chat';
           const title = urlParams.get('title') || 'Membee';
 
+          // Extract the domain from the script's src attribute
+          const domain = new URL(scriptSrc).origin;
+
           const svgChatIcon = createElement(
             'svg',
             { xmlns: 'http://www.w3.org/2000/svg', x: '0px', y: '0px', width: '30', height: '30', viewBox: '0 0 50 50' },
@@ -107,7 +116,7 @@
 
             iframeVisible &&
               createElement('iframe', {
-                src: `https://chatbotui.membee.app/?link=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`,
+                src: `${domain}/?link=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`,
                 style: { height: '100vh', width: '100vw', maxHeight: '63vh', maxWidth: '37vw', borderRadius: '10px', position: 'relative' },
               })
           );
