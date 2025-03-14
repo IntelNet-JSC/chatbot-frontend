@@ -1,10 +1,4 @@
 (function () {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = '/public/chatbot.css'; // Adjust the path based on your setup
-  document.head.appendChild(link);
-
   function loadScript(url, callback) {
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -31,8 +25,8 @@
     container.style.bottom = '100px';
     container.style.right = '25px';
 
-    const root = document.createElement('div');
-    container.appendChild(root);
+    // const root = document.createElement('div');
+    // container.appendChild(root);
 
     loadScript('https://cdn.jsdelivr.net/npm/react@17/umd/react.production.min.js', () => {
       loadScript('https://cdn.jsdelivr.net/npm/react-dom@17/umd/react-dom.production.min.js', () => {
@@ -61,8 +55,12 @@
           const scriptSrc = scriptTag.src;
           const urlParams = new URLSearchParams(scriptSrc.split('?')[1]);
 
-          const link = urlParams.get('link') || 'https://aidemo.membee.app/webhook/c8018a60-91d4-4664-9a07-411f396501f1/chat';
-          const title = urlParams.get('title') || 'Membee';
+          // const link = urlParams.get('link') || 'https://aidemo.membee.app/webhook/c8018a60-91d4-4664-9a07-411f396501f1/chat';
+          // const title = urlParams.get('title') || 'Membee';
+          // Construct the query string for the iframe src
+          const queryString = Array.from(urlParams.entries())
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
 
           // Extract the domain from the script's src attribute
           const domain = new URL(scriptSrc).origin;
@@ -94,6 +92,9 @@
                   position: 'fixed',
                   bottom: '50px',
                   right: '20px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer',
                 },
               },
               svgChatIcon
@@ -109,6 +110,9 @@
                     top: '2rem',
                     right: '2rem',
                     zIndex: 1000,
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    cursor: 'pointer',
                   },
                 },
                 svgCloseIcon
@@ -116,13 +120,22 @@
 
             iframeVisible &&
               createElement('iframe', {
-                src: `${domain}/?link=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`,
-                style: { height: '100vh', width: '100vw', maxHeight: '63vh', maxWidth: '37vw', borderRadius: '10px', position: 'relative' },
+                src: `${domain}/?${queryString}`,
+                style: {
+                  height: '100vh',
+                  width: '100vh',
+                  maxHeight: '65vh',
+                  maxWidth: '32vw',
+                  borderRadius: '10px',
+                  position: 'relative',
+                  border: 'none',
+                  boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 10px',
+                },
               })
           );
         }
 
-        render(createElement(EmbedComponent), root);
+        render(createElement(EmbedComponent), container);
       });
     });
   }

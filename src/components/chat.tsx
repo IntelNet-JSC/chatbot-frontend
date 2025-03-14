@@ -51,7 +51,7 @@ export default function Chat({ setOpen }: Chat) {
   }, [chat]);
 
   return (
-    <Card className={`${isMobile ? 'h-screen w-screen' : 'w-[440px]'} flex flex-col justify-between relative`}>
+    <Card className={`${isMobile ? 'h-screen w-screen' : 'h-screen w-screen'} flex flex-col justify-between relative`}>
       <div>
         <CardHeader>
           <div className="flex flex-row items-start justify-between max-w-[100%]">

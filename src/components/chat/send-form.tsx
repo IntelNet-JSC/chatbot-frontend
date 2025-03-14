@@ -115,9 +115,9 @@ export default function SendForm({ input, handleSubmit, handleInputChange, setCh
 
         setChatInput && setChatInput('');
       }}
-      className="flex items-center justify-center w-full space-x-2"
+      className="flex items-center justify-between w-full space-x-2"
     >
-      <div className="relative w-full max-w-xs">
+      <div className="relative w-full">
         <MicIcon
           onClick={toggleSpeech}
           className={`absolute right-2 h-4 w-4 top-1/2 transition-all transform -translate-y-2 ${
